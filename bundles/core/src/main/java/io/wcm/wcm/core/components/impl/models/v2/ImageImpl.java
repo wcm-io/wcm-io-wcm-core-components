@@ -50,6 +50,7 @@ import com.adobe.cq.wcm.core.components.models.datalayer.ImageData;
 import com.adobe.cq.wcm.core.components.models.datalayer.builder.AssetDataBuilder;
 import com.adobe.cq.wcm.core.components.models.datalayer.builder.DataLayerBuilder;
 import com.day.cq.wcm.api.designer.Style;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.wcm.handler.link.Link;
 import io.wcm.handler.link.LinkHandler;
@@ -344,8 +345,9 @@ public class ImageImpl extends AbstractComponentImpl implements Image, MediaMixi
   // --- data layer ---
 
   @Override
+  @JsonIgnore
   @SuppressWarnings("null")
-  protected @NotNull ImageData getComponentData() {
+  public @NotNull ImageData getComponentData() {
     return DataLayerBuilder.extending(super.getComponentData()).asImageComponent()
         .withTitle(this::getTitle)
         .withLinkUrl(this::getLink)
