@@ -14,7 +14,7 @@ _Enhanced with_ <span class="marker-label">MEDIA</span>&nbsp;_Media&nbsp;Handler
 
 **Page authoring components**
 
-* [Title](https://github.com/wcm-io/wcm-io-wcm-core-components/tree/develop/bundles/core/src/main/webapp/app-root/components/title/v2) <span class="marker-label">LINK</span>
+* [Title v3](https://github.com/wcm-io/wcm-io-wcm-core-components/tree/develop/bundles/core/src/main/webapp/app-root/components/title/v3) | [v2](https://github.com/wcm-io/wcm-io-wcm-core-components/tree/develop/bundles/core/src/main/webapp/app-root/components/title/v2) <span class="marker-label">LINK</span>
 * [Text](https://github.com/wcm-io/wcm-io-wcm-core-components/tree/develop/bundles/core/src/main/webapp/app-root/components/text/v2) <span class="marker-label">RICHTEXT</span> <span class="marker-label">LINK</span>
 * [Image](https://github.com/wcm-io/wcm-io-wcm-core-components/tree/develop/bundles/core/src/main/webapp/app-root/components/image/v2) <span class="marker-label">MEDIA</span> <span class="marker-label">LINK</span>
 * [Button v2](https://github.com/wcm-io/wcm-io-wcm-core-components/tree/develop/bundles/core/src/main/webapp/app-root/components/button/v2) | [v1](https://github.com/wcm-io/wcm-io-wcm-core-components/tree/develop/bundles/core/src/main/webapp/app-root/components/button/v1) <span class="marker-label">LINK</span>

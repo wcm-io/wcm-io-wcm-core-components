@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2019 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.v2;
+package io.wcm.wcm.core.components.impl.models.v3;
 
 import javax.annotation.PostConstruct;
 
@@ -32,15 +32,16 @@ import org.jetbrains.annotations.Nullable;
 
 import com.adobe.cq.export.json.ComponentExporter;
 import com.adobe.cq.export.json.ExporterConstants;
+import com.adobe.cq.wcm.core.components.commons.link.Link;
 import com.adobe.cq.wcm.core.components.models.Title;
 import com.adobe.cq.wcm.core.components.models.datalayer.ComponentData;
 import com.adobe.cq.wcm.core.components.models.datalayer.builder.DataLayerBuilder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import io.wcm.handler.link.Link;
 import io.wcm.handler.link.LinkHandler;
+import io.wcm.wcm.core.components.impl.link.LinkWrapper;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
 import io.wcm.wcm.core.components.impl.util.HandlerUnwrapper;
-import io.wcm.wcm.core.components.models.mixin.LinkMixin;
 
 /**
  * wcm.io-based enhancements for {@link Title}:
@@ -50,13 +51,13 @@ import io.wcm.wcm.core.components.models.mixin.LinkMixin;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { Title.class, ComponentExporter.class },
-    resourceType = TitleImpl.RESOURCE_TYPE)
+    resourceType = TitleV3Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class TitleImpl extends AbstractComponentImpl implements Title, LinkMixin {
+public class TitleV3Impl extends AbstractComponentImpl implements Title {
 
-  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/title/v2/title";
+  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/title/v3/title";
 
   @Self
   @Via(type = ResourceSuperType.class)
@@ -64,24 +65,25 @@ public class TitleImpl extends AbstractComponentImpl implements Title, LinkMixin
 
   @Self
   private LinkHandler linkHandler;
-  private Link link;
+  protected LinkWrapper link;
 
   @PostConstruct
   private void activate() {
-    link = HandlerUnwrapper.get(linkHandler, resource).build();
+    link = new LinkWrapper(HandlerUnwrapper.get(linkHandler, resource).build());
   }
 
   @Override
-  @NotNull
-  public Link getLinkObject() {
-    return link;
+  public @Nullable Link getLink() {
+    return link.orNull();
   }
 
   // --- fallback implementations ---
 
   @Override
+  @Deprecated
+  @JsonIgnore
   public String getLinkURL() {
-    return link.getUrl();
+    return link.getURL();
   }
 
   // --- delegated methods ---
@@ -112,7 +114,7 @@ public class TitleImpl extends AbstractComponentImpl implements Title, LinkMixin
   protected @NotNull ComponentData getComponentData() {
     return DataLayerBuilder.extending(super.getComponentData()).asComponent()
         .withTitle(this::getText)
-        .withLinkUrl(this::getLinkURL)
+        .withLinkUrl(link::getURL)
         .build();
   }
 

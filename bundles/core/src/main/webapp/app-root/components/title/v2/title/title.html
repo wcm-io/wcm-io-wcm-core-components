@@ -11,6 +11,8 @@
      class="cmp-title">
     <h1 class="cmp-title__text" data-sly-element="${title.type}"><a
             data-sly-unwrap="${!title.linkValid || title.linkDisabled}"
+            aria-label="${title.link.htmlAttributes['aria-label']}"
+            title="${title.link.htmlAttributes['title']}"
             class="cmp-title__link"
             data-sly-attribute="${title.linkAttributes}"
             data-cmp-clickable="${title.data ? true : false}">${text}</a></h1>

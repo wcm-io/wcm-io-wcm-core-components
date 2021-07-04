@@ -57,6 +57,7 @@ class PageListItemV1ImplTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testValidLink() {
     Page page = context.create().page(CONTENT_ROOT + "/page1", null,
         ImmutableValueMap.of(JCR_DESCRIPTION, "My Description"));
@@ -74,6 +75,7 @@ class PageListItemV1ImplTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testInvalidLink() {
     Page page = context.create().page(CONTENT_ROOT + "/page1");
     Link link = linkHandler.invalid();
