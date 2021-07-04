@@ -49,7 +49,7 @@ import static io.wcm.samples.core.testcontext.TestUtils.assertValidLink;
 import static io.wcm.samples.core.testcontext.TestUtils.assertValidMedia;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.enableDataLayer;
-import static io.wcm.wcm.core.components.impl.models.v1.TeaserImpl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v1.TeaserV1Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -80,7 +80,7 @@ import io.wcm.wcm.commons.contenttype.ContentType;
 import io.wcm.wcm.core.components.models.ResponsiveImage;
 
 @ExtendWith(AemContextExtension.class)
-class TeaserImplTest {
+class TeaserV1ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 

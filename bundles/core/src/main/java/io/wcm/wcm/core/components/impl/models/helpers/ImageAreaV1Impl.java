@@ -34,14 +34,14 @@ import io.wcm.handler.media.imagemap.ImageMapArea;
 /**
  * Implementation of {@link ImageArea}.
  */
-public class ImageAreaImpl implements ImageArea {
+public class ImageAreaV1Impl implements ImageArea {
 
   private final ImageMapArea delegate;
 
   /**
    * @param delegate Delegate
    */
-  public ImageAreaImpl(ImageMapArea delegate) {
+  public ImageAreaV1Impl(ImageMapArea delegate) {
     this.delegate = delegate;
   }
 
@@ -100,7 +100,7 @@ public class ImageAreaImpl implements ImageArea {
       return null;
     }
     return imageMap.stream()
-        .map(ImageAreaImpl::new)
+        .map(ImageAreaV1Impl::new)
         .collect(Collectors.toList());
   }
 

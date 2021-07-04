@@ -60,11 +60,11 @@ import io.wcm.wcm.core.components.models.mixin.MediaMixin;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { Download.class, ComponentExporter.class },
-    resourceType = DownloadImpl.RESOURCE_TYPE)
+    resourceType = DownloadV1Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class DownloadImpl extends AbstractComponentImpl implements Download, MediaMixin {
+public class DownloadV1Impl extends AbstractComponentImpl implements Download, MediaMixin {
 
   static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/download/v1/download";
 

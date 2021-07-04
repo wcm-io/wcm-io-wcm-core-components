@@ -48,11 +48,11 @@ import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { Text.class, ComponentExporter.class },
-    resourceType = TextImpl.RESOURCE_TYPE)
+    resourceType = TextV2Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class TextImpl extends AbstractComponentImpl implements Text {
+public class TextV2Impl extends AbstractComponentImpl implements Text {
 
   static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/text/v2/text";
 

@@ -47,11 +47,11 @@ import io.wcm.wcm.core.components.impl.models.helpers.AbstractContainerImpl;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { LayoutContainer.class, ComponentExporter.class },
-    resourceType = LayoutContainerImpl.RESOURCE_TYPE)
+    resourceType = LayoutContainerV1Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class LayoutContainerImpl extends AbstractContainerImpl implements LayoutContainer {
+public class LayoutContainerV1Impl extends AbstractContainerImpl implements LayoutContainer {
 
   static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/container/v1/container";
 

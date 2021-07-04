@@ -50,11 +50,11 @@ import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentExporterI
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { Container.class, ContainerExporter.class, ComponentExporter.class },
-    resourceType = ContainerImpl.RESOURCE_TYPE)
+    resourceType = ContainerV2Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class ContainerImpl extends AbstractComponentExporterImpl implements Container {
+public class ContainerV2Impl extends AbstractComponentExporterImpl implements Container {
 
   static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/form/container/v2/container";
 

@@ -62,7 +62,7 @@ import io.wcm.handler.media.MediaNameConstants;
 import io.wcm.sling.commons.adapter.AdaptTo;
 import io.wcm.sling.models.annotations.AemObject;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.ImageAreaImpl;
+import io.wcm.wcm.core.components.impl.models.helpers.ImageAreaV1Impl;
 import io.wcm.wcm.core.components.impl.util.HandlerUnwrapper;
 import io.wcm.wcm.core.components.models.ResponsiveImage;
 
@@ -71,11 +71,11 @@ import io.wcm.wcm.core.components.models.ResponsiveImage;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { ResponsiveImage.class, ComponentExporter.class },
-    resourceType = ResponsiveImageImpl.RESOURCE_TYPE)
+    resourceType = ResponsiveImageV1Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class ResponsiveImageImpl extends AbstractComponentImpl implements ResponsiveImage {
+public class ResponsiveImageV1Impl extends AbstractComponentImpl implements ResponsiveImage {
 
   /**
    * Resource type
@@ -124,7 +124,7 @@ public class ResponsiveImageImpl extends AbstractComponentImpl implements Respon
     }
     if (media.isValid()) {
       initPropertiesFromDamAsset(properties);
-      areas = ImageAreaImpl.convertMap(media.getMap());
+      areas = ImageAreaV1Impl.convertMap(media.getMap());
 
       // display popup title
       if (this.displayPopupTitle() && media.getElement() != null) {

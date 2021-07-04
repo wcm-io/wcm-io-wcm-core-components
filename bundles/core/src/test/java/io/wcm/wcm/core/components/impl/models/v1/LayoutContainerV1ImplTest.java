@@ -17,24 +17,22 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.v2;
+package io.wcm.wcm.core.components.impl.models.v1;
 
 import static io.wcm.samples.core.testcontext.AppAemContext.CONTENT_ROOT;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.enableDataLayer;
-import static io.wcm.wcm.core.components.impl.models.v2.TextImpl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v1.LayoutContainerV1Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.adobe.cq.wcm.core.components.models.Text;
+import com.adobe.cq.wcm.core.components.models.LayoutContainer;
 import com.adobe.cq.wcm.core.components.models.datalayer.ComponentData;
 import com.day.cq.wcm.api.Page;
 
@@ -44,7 +42,7 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
-class TextImplTest {
+class LayoutContainerV1ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -59,12 +57,11 @@ class TextImplTest {
 
   @Test
   void testEmpty() {
-    context.currentResource(context.create().resource(page, "text",
+    context.currentResource(context.create().resource(page, "container",
         PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE));
-    Text underTest = AdaptTo.notNull(context.request(), Text.class);
 
-    assertNull(underTest.getText());
-    assertFalse(underTest.isRichText());
+    LayoutContainer underTest = AdaptTo.notNull(context.request(), LayoutContainer.class);
+
     assertEquals(RESOURCE_TYPE, underTest.getExportedType());
     assertNotNull(underTest.getId());
     assertNull(underTest.getData());
@@ -72,36 +69,17 @@ class TextImplTest {
 
   @Test
   @SuppressWarnings("null")
-  void testRichText() {
+  void testEmpty_DataLayer() {
     enableDataLayer(context, true);
 
-    context.currentResource(context.create().resource(page, "text",
-        PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
-        "text", "<p>My Text</p>",
-        "textIsRich", true));
-    Text underTest = AdaptTo.notNull(context.request(), Text.class);
+    context.currentResource(context.create().resource(page, "container",
+        PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE));
 
-    assertEquals("<p>My Text</p>", underTest.getText());
-    assertTrue(underTest.isRichText());
-    assertEquals(RESOURCE_TYPE, underTest.getExportedType());
+    LayoutContainer underTest = AdaptTo.notNull(context.request(), LayoutContainer.class);
 
     ComponentData data = underTest.getData();
     assertNotNull(data);
     assertEquals(RESOURCE_TYPE, data.getType());
-    assertEquals("<p>My Text</p>", data.getText());
-  }
-
-  @Test
-  void testPlainText() {
-    context.currentResource(context.create().resource(page, "text",
-        PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
-        "text", "Line 1\nLine 2",
-        "textIsRich", false));
-    Text underTest = AdaptTo.notNull(context.request(), Text.class);
-
-    assertEquals("Line 1<br />Line 2", underTest.getText());
-    assertFalse(underTest.isRichText());
-    assertEquals(RESOURCE_TYPE, underTest.getExportedType());
   }
 
 }

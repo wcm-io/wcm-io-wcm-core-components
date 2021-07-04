@@ -30,7 +30,7 @@ import com.adobe.cq.wcm.core.components.models.ImageArea;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.handler.media.imagemap.impl.ImageMapAreaImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.ImageAreaImpl;
+import io.wcm.wcm.core.components.impl.models.helpers.ImageAreaV1Impl;
 
 public final class ImageAreaTestData {
 
@@ -54,7 +54,7 @@ public final class ImageAreaTestData {
 
   private static ImageArea area(@NotNull String shape, @NotNull String coordinates, @Nullable String relativeCoordinates,
       @NotNull String linkUrl, @Nullable String linkWindowTarget, @Nullable String altText) {
-    return new ImageAreaImpl(new ImageMapAreaImpl(shape, coordinates, relativeCoordinates,
+    return new ImageAreaV1Impl(new ImageMapAreaImpl(shape, coordinates, relativeCoordinates,
         linkUrl, linkWindowTarget, altText));
   }
 

@@ -35,7 +35,7 @@ import io.wcm.wcm.core.components.models.mixin.LinkMixin;
 /**
  * {@link ListItem} implementation for any links.
  */
-public class LinkListItemImpl extends AbstractListItemImpl implements ListItem, LinkMixin {
+public class LinkListItemV1Impl extends AbstractListItemImpl implements ListItem, LinkMixin {
 
   private final String title;
   private final Link link;
@@ -47,7 +47,7 @@ public class LinkListItemImpl extends AbstractListItemImpl implements ListItem, 
    * @param parentComponent The component that contains this list item
    * @param contextResource Resource in context of which this link item is used
    */
-  public LinkListItemImpl(@NotNull String title, @NotNull Link link, @Nullable String parentId,
+  public LinkListItemV1Impl(@NotNull String title, @NotNull Link link, @Nullable String parentId,
       @Nullable Component parentComponent, @NotNull Resource contextResource) {
     super(getLinkRequestResource(link, contextResource), parentId, parentComponent);
     this.title = title;

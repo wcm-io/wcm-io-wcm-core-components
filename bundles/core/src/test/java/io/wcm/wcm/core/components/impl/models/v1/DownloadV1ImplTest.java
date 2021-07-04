@@ -38,7 +38,7 @@ import static io.wcm.samples.core.testcontext.AppAemContext.DAM_ROOT;
 import static io.wcm.samples.core.testcontext.TestUtils.assertInvalidMedia;
 import static io.wcm.samples.core.testcontext.TestUtils.assertValidMedia;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
-import static io.wcm.wcm.core.components.impl.models.v1.DownloadImpl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v1.DownloadV1Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -62,7 +62,7 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import io.wcm.wcm.commons.contenttype.ContentType;
 
 @ExtendWith(AemContextExtension.class)
-class DownloadImplTest {
+class DownloadV1ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 

@@ -40,7 +40,7 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
-class LinkListItemImplTest {
+class LinkListItemV1ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -55,7 +55,7 @@ class LinkListItemImplTest {
   void testValidLink() {
     Page page = context.create().page(CONTENT_ROOT + "/page1");
     Link link = linkHandler.get(page).build();
-    ListItem underTest = new LinkListItemImpl("My Title", link, "p-id", null, page.getContentResource());
+    ListItem underTest = new LinkListItemV1Impl("My Title", link, "p-id", null, page.getContentResource());
 
     assertEquals("My Title", underTest.getTitle());
     assertEquals(page.getPath() + ".html", underTest.getURL());

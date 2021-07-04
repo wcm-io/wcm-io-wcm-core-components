@@ -55,7 +55,7 @@ import io.wcm.handler.richtext.RichTextHandler;
 import io.wcm.handler.richtext.TextMode;
 import io.wcm.sling.models.annotations.AemObject;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.LinkListItemImpl;
+import io.wcm.wcm.core.components.impl.models.helpers.LinkListItemV1Impl;
 import io.wcm.wcm.core.components.impl.util.HandlerUnwrapper;
 import io.wcm.wcm.core.components.models.mixin.LinkMixin;
 import io.wcm.wcm.core.components.models.mixin.MediaMixin;
@@ -69,10 +69,10 @@ import io.wcm.wcm.core.components.models.mixin.MediaMixin;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { Teaser.class, ComponentExporter.class },
-    resourceType = TeaserImpl.RESOURCE_TYPE)
+    resourceType = TeaserV1Impl.RESOURCE_TYPE)
 @Exporter(name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class TeaserImpl extends AbstractComponentImpl implements Teaser, MediaMixin, LinkMixin {
+public class TeaserV1Impl extends AbstractComponentImpl implements Teaser, MediaMixin, LinkMixin {
 
   static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/teaser/v1/teaser";
 
@@ -133,7 +133,7 @@ public class TeaserImpl extends AbstractComponentImpl implements Teaser, MediaMi
           String actionTitle = actionResource.getValueMap().get(PN_ACTION_TEXT, String.class);
           Link actionLink = linkHandler.get(actionResource).build();
           if (actionTitle != null && actionLink.isValid()) {
-            actions.add(new LinkListItemImpl(actionTitle, actionLink,
+            actions.add(new LinkListItemV1Impl(actionTitle, actionLink,
                 getId(), this.componentContext.getComponent(),
                 this.resource) {
               @Override

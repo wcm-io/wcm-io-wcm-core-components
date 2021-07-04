@@ -21,7 +21,7 @@ package io.wcm.wcm.core.components.impl.models.v2.form;
 
 import static io.wcm.samples.core.testcontext.AppAemContext.CONTENT_ROOT;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
-import static io.wcm.wcm.core.components.impl.models.v2.form.ContainerImpl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v2.form.ContainerV2Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -43,7 +43,7 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
 @ExtendWith(MockitoExtension.class)
-class ContainerImplTest {
+class ContainerV2ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 

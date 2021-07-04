@@ -62,7 +62,7 @@ import io.wcm.handler.url.UrlHandler;
 import io.wcm.sling.commons.adapter.AdaptTo;
 import io.wcm.sling.models.annotations.AemObject;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.ImageAreaImpl;
+import io.wcm.wcm.core.components.impl.models.helpers.ImageAreaV1Impl;
 import io.wcm.wcm.core.components.impl.servlets.ImageWidthProxyServlet;
 import io.wcm.wcm.core.components.impl.util.HandlerUnwrapper;
 import io.wcm.wcm.core.components.models.mixin.LinkMixin;
@@ -153,7 +153,7 @@ public class ImageV2Impl extends AbstractComponentImpl implements Image, MediaMi
       widths = buildRenditionWidths(media.getRendition());
       noScriptWidth = getNoScriptWidth();
       srcPattern = buildSrcPattern(media.getUrl());
-      areas = ImageAreaImpl.convertMap(media.getMap());
+      areas = ImageAreaV1Impl.convertMap(media.getMap());
     }
 
     // resolve link - decorative images have no link and no alt text by definition
