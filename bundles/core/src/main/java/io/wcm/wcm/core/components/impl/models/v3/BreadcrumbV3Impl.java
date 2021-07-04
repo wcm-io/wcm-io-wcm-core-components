@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2019 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.v1;
+package io.wcm.wcm.core.components.impl.models.v3;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +32,7 @@ import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.Exporter;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.jetbrains.annotations.NotNull;
 
 import com.adobe.cq.export.json.ComponentExporter;
 import com.adobe.cq.export.json.ExporterConstants;
@@ -45,7 +46,6 @@ import io.wcm.handler.link.LinkHandler;
 import io.wcm.handler.url.ui.SiteRoot;
 import io.wcm.sling.models.annotations.AemObject;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.BreadcrumbItemImpl;
 
 /**
  * wcm.io-based enhancements for {@link Breadcrumb}:
@@ -56,13 +56,13 @@ import io.wcm.wcm.core.components.impl.models.helpers.BreadcrumbItemImpl;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { Breadcrumb.class, ComponentExporter.class },
-    resourceType = BreadcrumbImpl.RESOURCE_TYPE)
+    resourceType = BreadcrumbV3Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class BreadcrumbImpl extends AbstractComponentImpl implements Breadcrumb {
+public class BreadcrumbV3Impl extends AbstractComponentImpl implements Breadcrumb {
 
-  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/breadcrumb/v2/breadcrumb";
+  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/breadcrumb/v3/breadcrumb";
 
   @AemObject
   private Style currentStyle;
@@ -94,13 +94,11 @@ public class BreadcrumbImpl extends AbstractComponentImpl implements Breadcrumb 
     List<NavigationItem> result = new LinkedList<>();
     Page page = currentPage;
     while (page != null) {
-      boolean isActivePage = StringUtils.equals(page.getPath(), currentPage.getPath());
-      if (!(isActivePage && hideCurrent)) {
+      boolean isCurrentPage = StringUtils.equals(page.getPath(), currentPage.getPath());
+      if (!(isCurrentPage && hideCurrent)) {
         if (checkIfNotHidden(page)) {
           Link link = linkHandler.get(page).build();
-          NavigationItem navigationItem = new BreadcrumbItemImpl(page, link,
-              isActivePage, page.getDepth(), Collections.emptyList(),
-              getId(), this.componentContext.getComponent());
+          NavigationItem navigationItem = newNavigationItem(page, link, isCurrentPage);
           result.add(0, navigationItem);
         }
       }
@@ -114,6 +112,12 @@ public class BreadcrumbImpl extends AbstractComponentImpl implements Breadcrumb 
 
   private boolean checkIfNotHidden(Page page) {
     return !page.isHideInNav() || showHidden;
+  }
+
+  protected NavigationItem newNavigationItem(@NotNull Page page, @NotNull Link link, boolean current) {
+    return new BreadcrumbV3ItemImpl(page, link, page.getDepth(),
+        current, Collections.emptyList(),
+        getId(), this.componentContext.getComponent());
   }
 
 }

@@ -144,7 +144,12 @@ public final class TestUtils {
     assertEquals(expected, actual);
 
     for (ListItem item : items) {
-      assertTrue(item instanceof LinkMixin, item.getPath() + " is LinkMixin");
+      if (item instanceof LinkMixin) {
+        assertTrue(((LinkMixin)item).isLinkValid());
+      }
+      else {
+        assertNotNull(item.getLink());
+      }
     }
   }
 

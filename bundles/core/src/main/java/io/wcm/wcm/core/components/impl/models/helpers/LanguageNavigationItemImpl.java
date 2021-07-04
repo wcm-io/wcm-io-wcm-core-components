@@ -37,7 +37,7 @@ import io.wcm.handler.link.Link;
 /**
  * {@link LanguageNavigationItem} implementation.
  */
-public class LanguageNavigationItemImpl extends NavigationItemImpl implements LanguageNavigationItem {
+public class LanguageNavigationItemImpl extends NavigationItemV1Impl implements LanguageNavigationItem {
 
   private final Page page;
   private final String title;
@@ -48,17 +48,18 @@ public class LanguageNavigationItemImpl extends NavigationItemImpl implements La
   /**
    * @param page Page
    * @param link Link
-   * @param active Active
    * @param level Level
+   * @param active Active
+   * @param current Current
    * @param children Children
    * @param title Title
    * @param parentId Parent ID
    * @param parentComponent The component that contains this list item
    */
   public LanguageNavigationItemImpl(@NotNull Page page, @NotNull Link link,
-      boolean active, int level, @NotNull List<NavigationItem> children,
+      int level, boolean active, boolean current, @NotNull List<NavigationItem> children,
       @Nullable String title, @Nullable String parentId, @Nullable Component parentComponent) {
-    super(page, link, active, level, children, parentId, parentComponent);
+    super(page, link, level, active, current, children, parentId, parentComponent);
     this.page = page;
     this.title = title;
   }

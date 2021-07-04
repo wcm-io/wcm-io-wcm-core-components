@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2019 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,15 +32,15 @@ import com.day.cq.wcm.api.components.Component;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.wcm.handler.link.Link;
-import io.wcm.wcm.core.components.models.mixin.LinkMixin;
+import io.wcm.wcm.core.components.impl.link.LinkWrapper;
 
 /**
  * {@link ListItem} implementation for page links.
  */
-public class PageListItemImpl extends AbstractListItemImpl implements ListItem, LinkMixin {
+public class PageListItemV2Impl extends AbstractListItemImpl implements ListItem {
 
   private final Page page;
-  private final Link link;
+  protected final LinkWrapper link;
 
   /**
    * @param page Page
@@ -48,22 +48,24 @@ public class PageListItemImpl extends AbstractListItemImpl implements ListItem, 
    * @param parentId Parent ID
    * @param parentComponent The component that contains this list item
    */
-  public PageListItemImpl(@NotNull Page page, @NotNull Link link,
+  public PageListItemV2Impl(@NotNull Page page, @NotNull Link link,
       @Nullable String parentId, @Nullable Component parentComponent) {
     super(page.getContentResource(), parentId, parentComponent);
     this.page = page;
-    this.link = link;
+    this.link = new LinkWrapper(link);
   }
 
   @Override
-  @NotNull
-  public Link getLinkObject() {
-    return link;
+  public @Nullable com.adobe.cq.wcm.core.components.commons.link.Link getLink() {
+    return link.orNull();
   }
 
+
   @Override
+  @Deprecated
+  @JsonIgnore
   public String getURL() {
-    return link.getUrl();
+    return link.getURL();
   }
 
   @Override
@@ -108,7 +110,7 @@ public class PageListItemImpl extends AbstractListItemImpl implements ListItem, 
   protected @NotNull PageData getComponentData() {
     return DataLayerBuilder.extending(super.getComponentData()).asPage()
         .withTitle(this::getTitle)
-        .withLinkUrl(this::getURL)
+        .withLinkUrl(() -> link.getURL())
         .build();
   }
 

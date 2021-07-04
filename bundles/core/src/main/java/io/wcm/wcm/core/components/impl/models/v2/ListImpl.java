@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.wcm.handler.link.LinkHandler;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.PageListItemImpl;
+import io.wcm.wcm.core.components.impl.models.helpers.PageListItemV1Impl;
 
 /**
  * wcm.io-based enhancements for {@link List}:
@@ -72,7 +72,7 @@ public class ListImpl extends AbstractComponentImpl implements List {
   public @NotNull Collection<ListItem> getListItems() {
     return getItems().stream()
         .filter(Objects::nonNull)
-        .map(page -> (ListItem)new PageListItemImpl(page, linkHandler.get(page).build(),
+        .map(page -> (ListItem)new PageListItemV1Impl(page, linkHandler.get(page).build(),
             getId(), this.componentContext.getComponent()))
         .collect(Collectors.toList());
   }

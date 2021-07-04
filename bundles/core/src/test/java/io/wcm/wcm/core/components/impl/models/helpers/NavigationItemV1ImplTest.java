@@ -41,7 +41,7 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
-class NavigationItemImplTest {
+class NavigationItemV1ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -58,11 +58,12 @@ class NavigationItemImplTest {
     Page page = context.create().page(CONTENT_ROOT + "/page1", null,
         ImmutableValueMap.of(JCR_DESCRIPTION, "My Description"));
     Link link = linkHandler.get(page).build();
-    NavigationItem underTest = new NavigationItemImpl(page, link,
-        true, 5, ImmutableList.of(), "p-id", null);
+    NavigationItem underTest = new NavigationItemV1Impl(page, link,
+        5, true, true, ImmutableList.of(), "p-id", null);
 
     assertEquals(page.getPath(), underTest.getPage().getPath());
     assertTrue(underTest.isActive());
+    assertTrue(underTest.isCurrent());
     assertEquals(ImmutableList.of(), underTest.getChildren());
     assertEquals(5, underTest.getLevel());
   }

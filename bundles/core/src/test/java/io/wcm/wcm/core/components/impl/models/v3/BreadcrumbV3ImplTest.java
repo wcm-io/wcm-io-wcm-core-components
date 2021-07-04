@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.v1;
+package io.wcm.wcm.core.components.impl.models.v3;
 
 import static com.adobe.cq.wcm.core.components.models.Breadcrumb.PN_HIDE_CURRENT;
 import static com.adobe.cq.wcm.core.components.models.Breadcrumb.PN_SHOW_HIDDEN;
@@ -29,7 +29,7 @@ import static io.wcm.samples.core.testcontext.TestUtils.assertNavigationItems;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.assertNavigationItems_DataLayer;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.enableDataLayer;
-import static io.wcm.wcm.core.components.impl.models.v1.BreadcrumbImpl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v3.BreadcrumbV3Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,7 +49,7 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
-class BreadcrumbImplTest {
+class BreadcrumbV3ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 

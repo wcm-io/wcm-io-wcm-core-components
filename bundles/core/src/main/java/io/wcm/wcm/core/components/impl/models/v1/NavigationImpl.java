@@ -59,7 +59,7 @@ import io.wcm.handler.url.UrlHandler;
 import io.wcm.handler.url.ui.SiteRoot;
 import io.wcm.sling.models.annotations.AemObject;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.NavigationItemImpl;
+import io.wcm.wcm.core.components.impl.models.helpers.NavigationItemV1Impl;
 
 /**
  * wcm.io-based enhancements for {@link Navigation}:
@@ -191,8 +191,9 @@ public class NavigationImpl extends AbstractComponentImpl implements Navigation 
     }
     if (structureStart == 0) {
       Link link = linkHandler.get(navigationRoot.page).build();
-      boolean isSelected = checkSelected(navigationRoot.page, link);
-      NavigationItemImpl root = new NavigationItemImpl(navigationRoot.page, link, isSelected, 0, itemTree,
+      boolean active = isActive(navigationRoot.page, link);
+      boolean current = isCurrent(navigationRoot.page, link);
+      NavigationItemV1Impl root = new NavigationItemV1Impl(navigationRoot.page, link, 0, active, current, itemTree,
           getId(), this.componentContext.getComponent());
       itemTree = new ArrayList<>();
       itemTree.add(root);
@@ -242,20 +243,26 @@ public class NavigationImpl extends AbstractComponentImpl implements Navigation 
         int level = pageLevel - navigationRoot.startLevel;
         List<NavigationItem> children = getItems(navigationRoot, page);
         Link link = linkHandler.get(page).build();
-        boolean isSelected = checkSelected(page, link);
+        boolean active = isActive(page, link);
+        boolean current = isCurrent(page, link);
         if (structureStart == 0) {
           level = level - 1;
         }
-        pages.add(new NavigationItemImpl(page, link, isSelected, level, children,
+        pages.add(new NavigationItemV1Impl(page, link, level, active, current, children,
             getId(), this.componentContext.getComponent()));
       }
     }
     return pages;
   }
 
-  private boolean checkSelected(@NotNull Page page, @NotNull Link link) {
-    return StringUtils.equals(currentPage.getPath(), page.getPath()) ||
+  private boolean isActive(@NotNull Page page, @NotNull Link link) {
+    return isCurrent(page, link) ||
         StringUtils.startsWith(currentPage.getPath(), page.getPath() + "/") ||
+        currentPageIsRedirectTarget(link);
+  }
+
+  private boolean isCurrent(@NotNull Page page, @NotNull Link link) {
+    return StringUtils.equals(currentPage.getPath(), page.getPath()) ||
         currentPageIsRedirectTarget(link);
   }
 

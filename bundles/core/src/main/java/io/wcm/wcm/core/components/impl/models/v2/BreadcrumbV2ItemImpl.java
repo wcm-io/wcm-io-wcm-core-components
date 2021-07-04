@@ -17,7 +17,9 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.helpers;
+package io.wcm.wcm.core.components.impl.models.v2;
+
+import static org.apache.sling.api.SlingConstants.PROPERTY_PATH;
 
 import java.util.List;
 
@@ -27,58 +29,32 @@ import org.jetbrains.annotations.Nullable;
 import com.adobe.cq.wcm.core.components.models.NavigationItem;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.components.Component;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.wcm.handler.link.Link;
+import io.wcm.wcm.core.components.impl.models.helpers.NavigationItemV1Impl;
 
 /**
- * {@link NavigationItem} implementation.
+ * {@link NavigationItem} wrapper for breadcrumb.
  */
-public class NavigationItemImpl extends PageListItemImpl implements NavigationItem {
-
-  private final Page page;
-  private final int level;
-  private final boolean active;
-  private final List<NavigationItem> children;
+@JsonIgnoreProperties({
+    "page", "children", "level", "description", "lastModified", PROPERTY_PATH
+})
+public class BreadcrumbV2ItemImpl extends NavigationItemV1Impl implements NavigationItem {
 
   /**
    * @param page Page
    * @param link Link
-   * @param active Active
    * @param level Level
+   * @param current Current
    * @param children Children
    * @param parentId Parent ID
    * @param parentComponent The component that contains this list item
    */
-  public NavigationItemImpl(@NotNull Page page, @NotNull Link link,
-      boolean active, int level, @NotNull List<NavigationItem> children,
+  public BreadcrumbV2ItemImpl(@NotNull Page page, @NotNull Link link,
+      int level, boolean current, @NotNull List<NavigationItem> children,
       @Nullable String parentId, @Nullable Component parentComponent) {
-    super(page, link, parentId, parentComponent);
-    this.page = page;
-    this.active = active;
-    this.level = level;
-    this.children = children;
-  }
-
-  @Override
-  @JsonIgnore
-  public Page getPage() {
-    return page;
-  }
-
-  @Override
-  public boolean isActive() {
-    return active;
-  }
-
-  @Override
-  public List<NavigationItem> getChildren() {
-    return children;
-  }
-
-  @Override
-  public int getLevel() {
-    return level;
+    super(page, link, level, current, current, children, parentId, parentComponent);
   }
 
 }
