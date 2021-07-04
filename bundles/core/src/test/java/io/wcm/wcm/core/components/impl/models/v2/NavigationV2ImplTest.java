@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2019 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.v1;
+package io.wcm.wcm.core.components.impl.models.v2;
 
 import static com.adobe.cq.wcm.core.components.models.Navigation.PN_COLLECT_ALL_PAGES;
 import static com.adobe.cq.wcm.core.components.models.Navigation.PN_NAVIGATION_ROOT;
@@ -31,7 +31,7 @@ import static io.wcm.samples.core.testcontext.TestUtils.assertNavigationItems;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.assertNavigationItems_DataLayer;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.enableDataLayer;
-import static io.wcm.wcm.core.components.impl.models.v1.NavigationImpl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v2.NavigationV2Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -54,7 +54,7 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
-class NavigationImplTest {
+class NavigationV2ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -68,7 +68,7 @@ class NavigationImplTest {
   private Page page3;
 
   @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
     loadComponentDefinition(context, RESOURCE_TYPE);
 
     languageRoot = context.pageManager().getPage(LANGUAGE_ROOT);

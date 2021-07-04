@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2019 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.v1;
+package io.wcm.wcm.core.components.impl.models.v2;
 
 import static com.day.cq.commons.jcr.JcrConstants.NT_UNSTRUCTURED;
 
@@ -59,7 +59,7 @@ import io.wcm.handler.url.UrlHandler;
 import io.wcm.handler.url.ui.SiteRoot;
 import io.wcm.sling.models.annotations.AemObject;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.NavigationItemV1Impl;
+import io.wcm.wcm.core.components.impl.models.helpers.NavigationItemV2Impl;
 
 /**
  * wcm.io-based enhancements for {@link Navigation}:
@@ -70,13 +70,13 @@ import io.wcm.wcm.core.components.impl.models.helpers.NavigationItemV1Impl;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { Navigation.class, ComponentExporter.class },
-    resourceType = NavigationImpl.RESOURCE_TYPE)
+    resourceType = NavigationV2Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class NavigationImpl extends AbstractComponentImpl implements Navigation {
+public class NavigationV2Impl extends AbstractComponentImpl implements Navigation {
 
-  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/navigation/v1/navigation";
+  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/navigation/v2/navigation";
 
   private static final int NO_STRUCTURE_DEPTH = -1;
 
@@ -193,8 +193,7 @@ public class NavigationImpl extends AbstractComponentImpl implements Navigation 
       Link link = linkHandler.get(navigationRoot.page).build();
       boolean active = isActive(navigationRoot.page, link);
       boolean current = isCurrent(navigationRoot.page, link);
-      NavigationItemV1Impl root = new NavigationItemV1Impl(navigationRoot.page, link, 0, active, current, itemTree,
-          getId(), this.componentContext.getComponent());
+      NavigationItem root = newNavigationItem(navigationRoot.page, link, 0, active, current, itemTree);
       itemTree = new ArrayList<>();
       itemTree.add(root);
     }
@@ -248,8 +247,7 @@ public class NavigationImpl extends AbstractComponentImpl implements Navigation 
         if (structureStart == 0) {
           level = level - 1;
         }
-        pages.add(new NavigationItemV1Impl(page, link, level, active, current, children,
-            getId(), this.componentContext.getComponent()));
+        pages.add(newNavigationItem(page, link, level, active, current, children));
       }
     }
     return pages;
@@ -257,18 +255,23 @@ public class NavigationImpl extends AbstractComponentImpl implements Navigation 
 
   private boolean isActive(@NotNull Page page, @NotNull Link link) {
     return isCurrent(page, link) ||
-        StringUtils.startsWith(currentPage.getPath(), page.getPath() + "/") ||
-        currentPageIsRedirectTarget(link);
+        StringUtils.startsWith(currentPage.getPath(), page.getPath() + "/");
   }
 
   private boolean isCurrent(@NotNull Page page, @NotNull Link link) {
-    return StringUtils.equals(currentPage.getPath(), page.getPath()) ||
+    return StringUtils.equals(page.getPath(), currentPage.getPath()) ||
         currentPageIsRedirectTarget(link);
   }
 
   private boolean currentPageIsRedirectTarget(@NotNull Link link) {
     return link.getTargetPage() != null
         && StringUtils.equals(currentPage.getPath(), link.getTargetPage().getPath());
+  }
+
+  protected NavigationItem newNavigationItem(@NotNull Page page, @NotNull Link link,
+      int level, boolean active, boolean current, @NotNull List<NavigationItem> children) {
+    return new NavigationItemV2Impl(page, link, level, active, current, children,
+        getId(), this.componentContext.getComponent());
   }
 
   private static final class NavigationRoot {
