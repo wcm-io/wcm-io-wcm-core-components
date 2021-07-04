@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2019 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.v1;
+package io.wcm.wcm.core.components.impl.models.v2;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +28,7 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.Via;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.via.ResourceSuperType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.adobe.cq.export.json.ComponentExporter;
@@ -39,7 +40,7 @@ import com.day.cq.wcm.api.Page;
 import io.wcm.handler.link.Link;
 import io.wcm.handler.link.LinkHandler;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.LanguageNavigationItemImpl;
+import io.wcm.wcm.core.components.impl.models.helpers.LanguageNavigationItemV2Impl;
 
 /**
  * wcm.io-based enhancements for {@link LanguageNavigation}:
@@ -49,13 +50,13 @@ import io.wcm.wcm.core.components.impl.models.helpers.LanguageNavigationItemImpl
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { LanguageNavigation.class, ComponentExporter.class },
-    resourceType = LanguageNavigationImpl.RESOURCE_TYPE)
+    resourceType = LanguageNavigationV2Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class LanguageNavigationImpl extends AbstractComponentImpl implements LanguageNavigation {
+public class LanguageNavigationV2Impl extends AbstractComponentImpl implements LanguageNavigation {
 
-  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/languagenavigation/v1/languagenavigation";
+  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/languagenavigation/v2/languagenavigation";
 
   @Self
   @Via(type = ResourceSuperType.class)
@@ -79,9 +80,8 @@ public class LanguageNavigationImpl extends AbstractComponentImpl implements Lan
   private NavigationItem toLanguageNavigationItem(NavigationItem item) {
     Page page = item.getPage();
     Link link = linkHandler.get(page).build();
-    return new LanguageNavigationItemImpl(page, link,
-        item.getLevel(), item.isActive(), item.isCurrent(), toLanguageNavigationItems(item.getChildren()), item.getTitle(),
-        getId(), this.componentContext.getComponent());
+    return newLanguageNavigationItem(page, link,
+        item.getLevel(), item.isActive(), item.isCurrent(), toLanguageNavigationItems(item.getChildren()), item.getTitle());
   }
 
   // --- delegated methods ---
@@ -89,6 +89,13 @@ public class LanguageNavigationImpl extends AbstractComponentImpl implements Lan
   @Override
   public @Nullable String getId() {
     return this.delegate.getId();
+  }
+
+  protected NavigationItem newLanguageNavigationItem(@NotNull Page page, @NotNull Link link,
+      int level, boolean active, boolean current, @NotNull List<NavigationItem> children, @Nullable String title) {
+    return new LanguageNavigationItemV2Impl(page, link,
+        level, active, current, children, title,
+        getId(), this.componentContext.getComponent());
   }
 
 }

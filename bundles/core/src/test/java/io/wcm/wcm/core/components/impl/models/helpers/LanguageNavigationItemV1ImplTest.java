@@ -44,7 +44,7 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
-class LanguageNavigationItemImplTest {
+class LanguageNavigationItemV1ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -62,7 +62,7 @@ class LanguageNavigationItemImplTest {
         ImmutableValueMap.of(JCR_DESCRIPTION, "My Description",
             JCR_LANGUAGE, "fr_CA"));
     Link link = linkHandler.get(page).build();
-    LanguageNavigationItem underTest = new LanguageNavigationItemImpl(page, link,
+    LanguageNavigationItem underTest = new LanguageNavigationItemV1Impl(page, link,
         5, true, true, ImmutableList.of(), "My Title", "p-id", null);
 
     assertEquals(page.getPath(), underTest.getPage().getPath());

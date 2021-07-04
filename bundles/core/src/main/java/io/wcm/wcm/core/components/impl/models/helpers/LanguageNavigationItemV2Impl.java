@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2019 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import io.wcm.handler.link.Link;
 /**
  * {@link LanguageNavigationItem} implementation.
  */
-public class LanguageNavigationItemImpl extends NavigationItemV1Impl implements LanguageNavigationItem {
+public class LanguageNavigationItemV2Impl extends NavigationItemV2Impl implements LanguageNavigationItem {
 
   private final Page page;
   private final String title;
@@ -56,7 +56,7 @@ public class LanguageNavigationItemImpl extends NavigationItemV1Impl implements 
    * @param parentId Parent ID
    * @param parentComponent The component that contains this list item
    */
-  public LanguageNavigationItemImpl(@NotNull Page page, @NotNull Link link,
+  public LanguageNavigationItemV2Impl(@NotNull Page page, @NotNull Link link,
       int level, boolean active, boolean current, @NotNull List<NavigationItem> children,
       @Nullable String title, @Nullable String parentId, @Nullable Component parentComponent) {
     super(page, link, level, active, current, children, parentId, parentComponent);
