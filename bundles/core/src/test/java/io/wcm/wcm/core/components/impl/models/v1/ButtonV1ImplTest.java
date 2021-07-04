@@ -28,7 +28,7 @@ import static io.wcm.samples.core.testcontext.TestUtils.assertInvalidLink;
 import static io.wcm.samples.core.testcontext.TestUtils.assertValidLink;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.enableDataLayer;
-import static io.wcm.wcm.core.components.impl.models.v1.ButtonImpl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v1.ButtonV1Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,7 +49,7 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
-class ButtonImplTest {
+class ButtonV1ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -63,6 +63,7 @@ class ButtonImplTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testEmpty() {
     context.currentResource(context.create().resource(page, "button",
         PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE));
@@ -80,7 +81,7 @@ class ButtonImplTest {
   }
 
   @Test
-  @SuppressWarnings("null")
+  @SuppressWarnings({ "null", "deprecation" })
   void testProperties() {
     enableDataLayer(context, true);
 
