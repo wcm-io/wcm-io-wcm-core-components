@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2019 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.v2;
+package io.wcm.wcm.core.components.impl.models.v3;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -39,9 +39,10 @@ import com.adobe.cq.wcm.core.components.models.ListItem;
 import com.day.cq.wcm.api.Page;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.wcm.handler.link.Link;
 import io.wcm.handler.link.LinkHandler;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
-import io.wcm.wcm.core.components.impl.models.helpers.PageListItemV1Impl;
+import io.wcm.wcm.core.components.impl.models.helpers.PageListItemV2Impl;
 
 /**
  * wcm.io-based enhancements for {@link List}:
@@ -51,13 +52,13 @@ import io.wcm.wcm.core.components.impl.models.helpers.PageListItemV1Impl;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { List.class, ComponentExporter.class },
-    resourceType = ListImpl.RESOURCE_TYPE)
+    resourceType = ListV3Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class ListImpl extends AbstractComponentImpl implements List {
+public class ListV3Impl extends AbstractComponentImpl implements List {
 
-  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/list/v2/list";
+  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/list/v3/list";
 
   @Self
   @Via(type = ResourceSuperType.class)
@@ -72,8 +73,7 @@ public class ListImpl extends AbstractComponentImpl implements List {
   public @NotNull Collection<ListItem> getListItems() {
     return getItems().stream()
         .filter(Objects::nonNull)
-        .map(page -> (ListItem)new PageListItemV1Impl(page, linkHandler.get(page).build(),
-            getId(), this.componentContext.getComponent()))
+        .map(page -> newPageListItem(page, linkHandler.get(page).build()))
         .collect(Collectors.toList());
   }
 
@@ -108,6 +108,11 @@ public class ListImpl extends AbstractComponentImpl implements List {
   @Override
   public String getDateFormatString() {
     return this.delegate.getDateFormatString();
+  }
+
+  protected ListItem newPageListItem(@NotNull Page page, @NotNull Link link) {
+    return new PageListItemV2Impl(page, link,
+        getId(), this.componentContext.getComponent());
   }
 
 }

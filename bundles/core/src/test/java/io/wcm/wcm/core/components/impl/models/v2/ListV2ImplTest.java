@@ -25,7 +25,7 @@ import static io.wcm.samples.core.testcontext.TestUtils.assertListItems;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.assertListItems_DataLayer;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.enableDataLayer;
-import static io.wcm.wcm.core.components.impl.models.v2.ListImpl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v2.ListV2Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -48,7 +48,7 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
-class ListImplTest {
+class ListV2ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
