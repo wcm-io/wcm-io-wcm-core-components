@@ -47,7 +47,7 @@ import static io.wcm.samples.core.testcontext.TestUtils.assertValidLink;
 import static io.wcm.samples.core.testcontext.TestUtils.assertValidMedia;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.enableDataLayer;
-import static io.wcm.wcm.core.components.impl.models.v2.ImageImpl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v2.ImageV2Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -80,7 +80,7 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import io.wcm.wcm.commons.contenttype.ContentType;
 
 @ExtendWith(AemContextExtension.class)
-class ImageImplTest {
+class ImageV2ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -143,6 +143,7 @@ class ImageImplTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testWithAssetImage() {
     context.currentResource(context.create().resource(page.getContentResource().getPath() + "/image",
         PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
@@ -171,6 +172,7 @@ class ImageImplTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testWithUploadedImage() {
     Resource imageResource = context.create().resource(page.getContentResource().getPath() + "/image",
         PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
@@ -199,7 +201,7 @@ class ImageImplTest {
   }
 
   @Test
-  @SuppressWarnings("null")
+  @SuppressWarnings({ "null", "deprecation" })
   void testWithImageAndLink() {
     enableDataLayer(context, true);
 
@@ -229,6 +231,7 @@ class ImageImplTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testWithImageAndLink_Decorative() {
     context.currentResource(context.create().resource(page.getContentResource().getPath() + "/image",
         PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
@@ -248,6 +251,7 @@ class ImageImplTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testWithImageAndLink_Decorative_ContentPolicy() {
     context.contentPolicyMapping(RESOURCE_TYPE,
         PN_IS_DECORATIVE, true,

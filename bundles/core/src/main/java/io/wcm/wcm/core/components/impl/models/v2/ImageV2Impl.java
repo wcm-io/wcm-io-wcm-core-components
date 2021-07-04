@@ -81,11 +81,11 @@ import io.wcm.wcm.core.components.models.mixin.MediaMixin;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { Image.class, ComponentExporter.class },
-    resourceType = ImageImpl.RESOURCE_TYPE)
+    resourceType = ImageV2Impl.RESOURCE_TYPE)
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class ImageImpl extends AbstractComponentImpl implements Image, MediaMixin, LinkMixin {
+public class ImageV2Impl extends AbstractComponentImpl implements Image, MediaMixin, LinkMixin {
 
   /**
    * Resource type
