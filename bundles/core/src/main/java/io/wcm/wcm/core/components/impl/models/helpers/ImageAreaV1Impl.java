@@ -22,72 +22,31 @@ package io.wcm.wcm.core.components.impl.models.helpers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jetbrains.annotations.Nullable;
 
+import com.adobe.cq.wcm.core.components.commons.link.Link;
 import com.adobe.cq.wcm.core.components.models.ImageArea;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.wcm.handler.media.imagemap.ImageMapArea;
 
 /**
  * Implementation of {@link ImageArea}.
  */
-public class ImageAreaV1Impl implements ImageArea {
-
-  private final ImageMapArea delegate;
+public class ImageAreaV1Impl extends ImageAreaV2Impl {
 
   /**
    * @param delegate Delegate
    */
-  public ImageAreaV1Impl(ImageMapArea delegate) {
-    this.delegate = delegate;
+  public ImageAreaV1Impl(ImageMapArea<io.wcm.handler.link.Link> delegate) {
+    super(delegate);
   }
 
+  // overwrite to add @JsonIgnore
   @Override
-  public String getShape() {
-    return delegate.getShape();
-  }
-
-  @Override
-  public String getCoordinates() {
-    return delegate.getCoordinates();
-  }
-
-  @Override
-  public String getRelativeCoordinates() {
-    return delegate.getRelativeCoordinates();
-  }
-
-  @Override
-  public String getHref() {
-    return delegate.getLinkUrl();
-  }
-
-  @Override
-  public String getTarget() {
-    return StringUtils.defaultString(delegate.getLinkWindowTarget());
-  }
-
-  @Override
-  public String getAlt() {
-    return StringUtils.defaultString(delegate.getAltText());
-  }
-
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
-  }
-
-  @Override
-  public String toString() {
-    return delegate.toString();
+  @JsonIgnore
+  public Link getLink() {
+    return super.getLink();
   }
 
   /**

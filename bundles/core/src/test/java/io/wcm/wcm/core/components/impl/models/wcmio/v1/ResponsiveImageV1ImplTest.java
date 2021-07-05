@@ -359,7 +359,7 @@ class ResponsiveImageV1ImplTest {
 
     ResponsiveImage underTest = AdaptTo.notNull(context.request(), ResponsiveImage.class);
 
-    assertEquals(ImageAreaTestData.EXPECTED_AREAS, underTest.getAreas());
+    assertEquals(ImageAreaTestData.getExpectedAreasV1(context), underTest.getAreas());
     // image is wrapped in wrapper element when sibling with map areas is present
     assertEquals("Asset Title", underTest.getMediaObject().getElement().getChild("img").getAttributeValue("title"));
   }

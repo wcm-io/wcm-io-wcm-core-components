@@ -421,7 +421,7 @@ class ImageV2ImplTest {
 
     Image underTest = AdaptTo.notNull(context.request(), Image.class);
 
-    assertEquals(ImageAreaTestData.EXPECTED_AREAS, underTest.getAreas());
+    assertEquals(ImageAreaTestData.getExpectedAreasV1(context), underTest.getAreas());
   }
 
   @Test
