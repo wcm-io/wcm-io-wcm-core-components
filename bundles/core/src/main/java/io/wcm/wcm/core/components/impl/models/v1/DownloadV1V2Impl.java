@@ -60,13 +60,14 @@ import io.wcm.wcm.core.components.models.mixin.MediaMixin;
  */
 @Model(adaptables = SlingHttpServletRequest.class,
     adapters = { Download.class, ComponentExporter.class },
-    resourceType = DownloadV1Impl.RESOURCE_TYPE)
+    resourceType = { DownloadV1V2Impl.RESOURCE_TYPE_V1, DownloadV1V2Impl.RESOURCE_TYPE_V2 })
 @Exporter(
     name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class DownloadV1Impl extends AbstractComponentImpl implements Download, MediaMixin {
+public class DownloadV1V2Impl extends AbstractComponentImpl implements Download, MediaMixin {
 
-  static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/download/v1/download";
+  static final String RESOURCE_TYPE_V1 = "wcm-io/wcm/core/components/download/v1/download";
+  static final String RESOURCE_TYPE_V2 = "wcm-io/wcm/core/components/download/v2/download";
 
   @AemObject
   private Style currentStyle;
@@ -87,6 +88,7 @@ public class DownloadV1Impl extends AbstractComponentImpl implements Download, M
   private boolean displaySize;
   private boolean displayFormat;
   private boolean displayFilename;
+  private boolean hideTitleLink;
 
   private String titleType;
   private String filename;
@@ -109,6 +111,7 @@ public class DownloadV1Impl extends AbstractComponentImpl implements Download, M
       displaySize = currentStyle.get(PN_DISPLAY_SIZE, true);
       displayFormat = currentStyle.get(PN_DISPLAY_FORMAT, true);
       displayFilename = currentStyle.get(PN_DISPLAY_FILENAME, true);
+      hideTitleLink = currentStyle.get(PN_HIDE_TITLE_LINK, false);
     }
 
     media = mediaHandler.get(resource, new MediaArgs()
@@ -207,6 +210,11 @@ public class DownloadV1Impl extends AbstractComponentImpl implements Download, M
   @Override
   public boolean displayFilename() {
     return displayFilename;
+  }
+
+  @Override
+  public boolean hideTitleLink() {
+    return hideTitleLink;
   }
 
   @Override

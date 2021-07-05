@@ -24,6 +24,7 @@ import static com.adobe.cq.wcm.core.components.models.Download.PN_DESCRIPTION_FR
 import static com.adobe.cq.wcm.core.components.models.Download.PN_DISPLAY_FILENAME;
 import static com.adobe.cq.wcm.core.components.models.Download.PN_DISPLAY_FORMAT;
 import static com.adobe.cq.wcm.core.components.models.Download.PN_DISPLAY_SIZE;
+import static com.adobe.cq.wcm.core.components.models.Download.PN_HIDE_TITLE_LINK;
 import static com.adobe.cq.wcm.core.components.models.Download.PN_INLINE;
 import static com.adobe.cq.wcm.core.components.models.Download.PN_TITLE_FROM_ASSET;
 import static com.adobe.cq.wcm.core.components.models.Download.PN_TITLE_TYPE;
@@ -38,7 +39,8 @@ import static io.wcm.samples.core.testcontext.AppAemContext.DAM_ROOT;
 import static io.wcm.samples.core.testcontext.TestUtils.assertInvalidMedia;
 import static io.wcm.samples.core.testcontext.TestUtils.assertValidMedia;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
-import static io.wcm.wcm.core.components.impl.models.v1.DownloadV1Impl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v1.DownloadV1V2Impl.RESOURCE_TYPE_V1;
+import static io.wcm.wcm.core.components.impl.models.v1.DownloadV1V2Impl.RESOURCE_TYPE_V2;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -48,8 +50,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.sling.api.resource.Resource;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.adobe.cq.wcm.core.components.models.Download;
 import com.day.cq.dam.api.Asset;
@@ -62,7 +65,7 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import io.wcm.wcm.commons.contenttype.ContentType;
 
 @ExtendWith(AemContextExtension.class)
-class DownloadV1ImplTest {
+class DownloadV1V2ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -70,15 +73,16 @@ class DownloadV1ImplTest {
 
   @BeforeEach
   void setUp() {
-    loadComponentDefinition(context, RESOURCE_TYPE);
+    loadComponentDefinition(context, RESOURCE_TYPE_V1);
 
     page = context.create().page(CONTENT_ROOT + "/page1");
   }
 
-  @Test
-  void testEmpty() {
+  @ParameterizedTest
+  @ValueSource(strings = { RESOURCE_TYPE_V1, RESOURCE_TYPE_V2 })
+  void testEmpty(String resourceType) {
     context.currentResource(context.create().resource(page, "download",
-        PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE));
+        PROPERTY_RESOURCE_TYPE, resourceType));
     Download underTest = AdaptTo.notNull(context.request(), Download.class);
 
     assertNull(underTest.getTitle());
@@ -93,38 +97,43 @@ class DownloadV1ImplTest {
     assertTrue(underTest.displayFormat());
     assertNull(underTest.getFilename());
     assertTrue(underTest.displayFilename());
+    assertFalse(underTest.hideTitleLink());
     assertNotNull(underTest.getId());
 
     assertInvalidMedia(underTest);
     assertNull(underTest.getData());
 
-    assertEquals(RESOURCE_TYPE, underTest.getExportedType());
+    assertEquals(resourceType, underTest.getExportedType());
   }
 
-  @Test
-  void testEmpty_ContentPolicy() {
-    context.contentPolicyMapping(RESOURCE_TYPE,
+  @ParameterizedTest
+  @ValueSource(strings = { RESOURCE_TYPE_V1, RESOURCE_TYPE_V2 })
+  void testEmpty_ContentPolicy(String resourceType) {
+    context.contentPolicyMapping(resourceType,
         PN_TITLE_TYPE, "h3",
         PN_DISPLAY_SIZE, false,
         PN_DISPLAY_FORMAT, false,
-        PN_DISPLAY_FILENAME, false);
+        PN_DISPLAY_FILENAME, false,
+        PN_HIDE_TITLE_LINK, true);
 
     context.currentResource(context.create().resource(page, "download",
-        PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE));
+        PROPERTY_RESOURCE_TYPE, resourceType));
     Download underTest = AdaptTo.notNull(context.request(), Download.class);
 
     assertEquals("h3", underTest.getTitleType());
     assertFalse(underTest.displaySize());
     assertFalse(underTest.displayFormat());
     assertFalse(underTest.displayFilename());
+    assertTrue(underTest.hideTitleLink());
   }
 
-  @Test
-  void testAssetReference() {
+  @ParameterizedTest
+  @ValueSource(strings = { RESOURCE_TYPE_V1, RESOURCE_TYPE_V2 })
+  void testAssetReference(String resourceType) {
     Asset asset = context.create().asset(DAM_ROOT + "/file1.pdf", "/files/test.pdf", ContentType.PDF);
 
     context.currentResource(context.create().resource(page, "download",
-        PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
+        PROPERTY_RESOURCE_TYPE, resourceType,
         PN_MEDIA_REF_STANDARD, asset.getPath(),
         JCR_TITLE, "My Title",
         JCR_DESCRIPTION, "My Description",
@@ -149,12 +158,13 @@ class DownloadV1ImplTest {
     assertValidMedia(underTest, expectedMediaUrl);
   }
 
-  @Test
-  void testAssetReference_Inline() {
+  @ParameterizedTest
+  @ValueSource(strings = { RESOURCE_TYPE_V1, RESOURCE_TYPE_V2 })
+  void testAssetReference_Inline(String resourceType) {
     Asset asset = context.create().asset(DAM_ROOT + "/file1.pdf", "/files/test.pdf", ContentType.PDF);
 
     context.currentResource(context.create().resource(page, "download",
-        PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
+        PROPERTY_RESOURCE_TYPE, resourceType,
         PN_MEDIA_REF_STANDARD, asset.getPath(),
         PN_INLINE, true));
     Download underTest = AdaptTo.notNull(context.request(), Download.class);
@@ -166,14 +176,15 @@ class DownloadV1ImplTest {
     assertValidMedia(underTest, expectedMediaUrl);
   }
 
-  @Test
-  void testAssetReference_TitleDescFromAsset() {
+  @ParameterizedTest
+  @ValueSource(strings = { RESOURCE_TYPE_V1, RESOURCE_TYPE_V2 })
+  void testAssetReference_TitleDescFromAsset(String resourceType) {
     Asset asset = context.create().asset(DAM_ROOT + "/file1.pdf", "/files/test.pdf", ContentType.PDF,
         DC_TITLE, "My Asset Title",
         DC_DESCRIPTION, "My Asset Description");
 
     context.currentResource(context.create().resource(page, "download",
-        PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
+        PROPERTY_RESOURCE_TYPE, resourceType,
         PN_MEDIA_REF_STANDARD, asset.getPath(),
         JCR_TITLE, "My Title",
         JCR_DESCRIPTION, "My Description",
@@ -185,10 +196,11 @@ class DownloadV1ImplTest {
     assertEquals("My Asset Description", underTest.getDescription());
   }
 
-  @Test
-  void testUploadedFile() {
+  @ParameterizedTest
+  @ValueSource(strings = { RESOURCE_TYPE_V1, RESOURCE_TYPE_V2 })
+  void testUploadedFile(String resourceType) {
     Resource downloadResource = context.create().resource(page, "download",
-        PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
+        PROPERTY_RESOURCE_TYPE, resourceType,
         NN_MEDIA_INLINE_STANDARD + "Name", "file1.pdf",
         JCR_TITLE, "My Title",
         JCR_DESCRIPTION, "My Description",
@@ -215,7 +227,7 @@ class DownloadV1ImplTest {
 
     assertValidMedia(underTest, expectedMediaUrl);
 
-    assertEquals(RESOURCE_TYPE, underTest.getExportedType());
+    assertEquals(resourceType, underTest.getExportedType());
   }
 
 }
