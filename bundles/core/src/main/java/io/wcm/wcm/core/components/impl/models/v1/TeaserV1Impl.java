@@ -19,46 +19,23 @@
  */
 package io.wcm.wcm.core.components.impl.models.v1;
 
-import static com.day.cq.commons.jcr.JcrConstants.JCR_DESCRIPTION;
-import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
-import static io.wcm.handler.media.MediaNameConstants.PROP_CSS_CLASS;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.Exporter;
 import org.apache.sling.models.annotations.Model;
-import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.jetbrains.annotations.NotNull;
 
 import com.adobe.cq.export.json.ComponentExporter;
 import com.adobe.cq.export.json.ExporterConstants;
 import com.adobe.cq.wcm.core.components.models.ListItem;
 import com.adobe.cq.wcm.core.components.models.Teaser;
-import com.adobe.cq.wcm.core.components.models.datalayer.ComponentData;
-import com.adobe.cq.wcm.core.components.models.datalayer.builder.DataLayerBuilder;
-import com.day.cq.wcm.api.Page;
-import com.day.cq.wcm.api.designer.Style;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.wcm.handler.link.Link;
-import io.wcm.handler.link.LinkHandler;
-import io.wcm.handler.media.Media;
-import io.wcm.handler.media.MediaHandler;
-import io.wcm.handler.richtext.RichTextHandler;
-import io.wcm.handler.richtext.TextMode;
-import io.wcm.sling.models.annotations.AemObject;
-import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
+import io.wcm.wcm.core.components.impl.link.LinkWrapper;
 import io.wcm.wcm.core.components.impl.models.helpers.LinkListItemV1Impl;
-import io.wcm.wcm.core.components.impl.util.HandlerUnwrapper;
+import io.wcm.wcm.core.components.impl.models.v2.TeaserV2Impl;
 import io.wcm.wcm.core.components.models.mixin.LinkMixin;
-import io.wcm.wcm.core.components.models.mixin.MediaMixin;
 
 /**
  * wcm.io-based enhancements for {@link Teaser}:
@@ -72,192 +49,35 @@ import io.wcm.wcm.core.components.models.mixin.MediaMixin;
     resourceType = TeaserV1Impl.RESOURCE_TYPE)
 @Exporter(name = ExporterConstants.SLING_MODEL_EXPORTER_NAME,
     extensions = ExporterConstants.SLING_MODEL_EXTENSION)
-public class TeaserV1Impl extends AbstractComponentImpl implements Teaser, MediaMixin, LinkMixin {
+public class TeaserV1Impl extends TeaserV2Impl implements LinkMixin {
 
   static final String RESOURCE_TYPE = "wcm-io/wcm/core/components/teaser/v1/teaser";
 
-  private static final String CTA_ID_PREFIX = "cta";
-
-  @AemObject
-  private Style currentStyle;
-  @Self
-  private MediaHandler mediaHandler;
-  @Self
-  private LinkHandler linkHandler;
-  @Self
-  private RichTextHandler richTextHandler;
-
-  private Media media;
-  private Link link;
-  private final List<ListItem> actions = new ArrayList<>();
-  private Page targetPage;
-
-  private String pretitle;
-  private String title;
-  private String description;
-  private String titleType;
-  private boolean showTitleType;
-  private boolean actionsEnabled;
-  private boolean imageLinkHidden;
-  private boolean titleLinkHidden;
-
-  @PostConstruct
-  private void activate() {
-    ValueMap properties = resource.getValueMap();
-
-    // read style properties
-    boolean pretitleHidden = currentStyle.get(PN_PRETITLE_HIDDEN, false);
-    boolean titleHidden = currentStyle.get(PN_TITLE_HIDDEN, false);
-    boolean descriptionHidden = currentStyle.get(PN_DESCRIPTION_HIDDEN, false);
-    titleType = currentStyle.get(PN_TITLE_TYPE, (String)null);
-    showTitleType = currentStyle.get(Teaser.PN_SHOW_TITLE_TYPE, false);
-    imageLinkHidden = currentStyle.get(PN_IMAGE_LINK_HIDDEN, false);
-    titleLinkHidden = currentStyle.get(PN_TITLE_LINK_HIDDEN, false);
-    boolean actionsDisabled = currentStyle.get(PN_ACTIONS_DISABLED, false);
-
-    // read component properties
-    actionsEnabled = properties.get(PN_ACTIONS_ENABLED, false) && !actionsDisabled;
-    boolean titleFromPage = properties.get(PN_TITLE_FROM_PAGE, false);
-    boolean descriptionFromPage = properties.get(PN_DESCRIPTION_FROM_PAGE, false);
-
-    // resolve teaser media
-    media = HandlerUnwrapper.get(mediaHandler, resource)
-        .property(PROP_CSS_CLASS, "cmp-image__image")
-        .build();
-
-    // resolve actions with links
-    if (actionsEnabled) {
-      Resource actionsNode = resource.getChild(NN_ACTIONS);
-      if (actionsNode != null) {
-        for (Resource actionResource : actionsNode.getChildren()) {
-          String actionTitle = actionResource.getValueMap().get(PN_ACTION_TEXT, String.class);
-          Link actionLink = linkHandler.get(actionResource).build();
-          if (actionTitle != null && actionLink.isValid()) {
-            actions.add(new LinkListItemV1Impl(actionTitle, actionLink,
-                getId(), this.componentContext.getComponent(),
-                this.resource) {
-              @Override
-              protected String getItemIdPrefix() {
-                return CTA_ID_PREFIX;
-              }
-            });
-            if (targetPage == null) {
-              // get target page from first action
-              targetPage = actionLink.getTargetPage();
-            }
-          }
-        }
-      }
-      // primary link is not enabled when actions are enabled
-      link = linkHandler.invalid();
-    }
-
-    // if no actions enabled, resolve primary teaser link
-    else {
-      link = HandlerUnwrapper.get(linkHandler, resource).build();
-      targetPage = link.getTargetPage();
-    }
-
-    // read title and description
-    if (!pretitleHidden) {
-      pretitle = properties.get("pretitle", String.class);
-    }
-    if (!titleHidden) {
-      if (titleFromPage) {
-        if (targetPage != null) {
-          title = StringUtils.defaultIfEmpty(targetPage.getPageTitle(), targetPage.getTitle());
-        }
-      }
-      else {
-        title = properties.get(JCR_TITLE, String.class);
-      }
-    }
-    if (!descriptionHidden) {
-      if (descriptionFromPage) {
-        if (targetPage != null) {
-          description = targetPage.getDescription();
-          // page description is by default no rich text
-          description = richTextHandler.get(description).textMode(TextMode.PLAIN).buildMarkup();
-        }
-      }
-      else {
-        description = properties.get(JCR_DESCRIPTION, String.class);
-        // description in teaser is rich text
-        description = richTextHandler.get(description).textMode(TextMode.XHTML).buildMarkup();
-      }
-    }
-
-
-  }
-
-  @Override
-  public @NotNull Media getMediaObject() {
-    return media;
-  }
-
   @Override
   public @NotNull Link getLinkObject() {
-    return link;
+    return link.getLinkObject();
   }
 
+  // overwrite to add @JsonIgnore
   @Override
-  public boolean isActionsEnabled() {
-    return actionsEnabled;
+  @JsonIgnore
+  public com.adobe.cq.wcm.core.components.commons.link.Link getLink() {
+    return super.getLink();
   }
 
+  // overwrite to add @JsonIgnore(false)
   @Override
-  public List<ListItem> getActions() {
-    return Collections.unmodifiableList(actions);
-  }
-
-  @Override
+  @Deprecated
+  @JsonIgnore(false)
+  @JsonProperty("linkURL")
   public String getLinkURL() {
-    return link.getUrl();
+    return super.getLinkURL();
   }
 
   @Override
-  public boolean isImageLinkHidden() {
-    return imageLinkHidden;
-  }
-
-  @Override
-  public String getTitle() {
-    return title;
-  }
-
-  @Override
-  public String getPretitle() {
-    return pretitle;
-  }
-
-  @Override
-  public boolean isTitleLinkHidden() {
-    return titleLinkHidden;
-  }
-
-  @Override
-  public String getDescription() {
-    return description;
-  }
-
-  @Override
-  public String getTitleType() {
-    if (showTitleType) {
-      titleType = resource.getValueMap().get(Teaser.PN_TITLE_TYPE, titleType);
-    }
-    return titleType;
-  }
-
-
-  // --- data layer ---
-
-  @Override
-  protected @NotNull ComponentData getComponentData() {
-    return DataLayerBuilder.extending(super.getComponentData()).asComponent()
-        .withTitle(this::getTitle)
-        .withLinkUrl(this::getLinkURL)
-        .withDescription(this::getDescription)
-        .build();
+  protected ListItem newLinkListItem(@NotNull String newTitle, @NotNull LinkWrapper newLink, @NotNull String itemIdPrefix) {
+    return new LinkListItemV1Impl(newTitle, newLink, itemIdPrefix,
+        getId(), this.componentContext.getComponent(), this.resource);
   }
 
 }

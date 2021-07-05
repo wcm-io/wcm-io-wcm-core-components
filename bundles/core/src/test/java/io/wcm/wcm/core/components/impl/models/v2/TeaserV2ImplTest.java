@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2019 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.wcm.core.components.impl.models.v1;
+package io.wcm.wcm.core.components.impl.models.v2;
 
 import static com.adobe.cq.wcm.core.components.models.Teaser.NN_ACTIONS;
 import static com.adobe.cq.wcm.core.components.models.Teaser.PN_ACTIONS_DISABLED;
@@ -49,7 +49,7 @@ import static io.wcm.samples.core.testcontext.TestUtils.assertValidLink;
 import static io.wcm.samples.core.testcontext.TestUtils.assertValidMedia;
 import static io.wcm.samples.core.testcontext.TestUtils.loadComponentDefinition;
 import static io.wcm.wcm.core.components.impl.models.helpers.DataLayerTestUtils.enableDataLayer;
-import static io.wcm.wcm.core.components.impl.models.v1.TeaserV1Impl.RESOURCE_TYPE;
+import static io.wcm.wcm.core.components.impl.models.v2.TeaserV2Impl.RESOURCE_TYPE;
 import static org.apache.sling.api.resource.ResourceResolver.PROPERTY_RESOURCE_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -80,7 +80,7 @@ import io.wcm.wcm.commons.contenttype.ContentType;
 import io.wcm.wcm.core.components.models.ResponsiveImage;
 
 @ExtendWith(AemContextExtension.class)
-class TeaserV1ImplTest {
+class TeaserV2ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -100,7 +100,6 @@ class TeaserV1ImplTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void testEmpty() {
     context.currentResource(context.create().resource(page, "teaser",
         PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE));
@@ -109,7 +108,6 @@ class TeaserV1ImplTest {
 
     assertFalse(underTest.isActionsEnabled());
     assertTrue(underTest.getActions().isEmpty());
-    assertNull(underTest.getLinkURL());
     assertFalse(underTest.isImageLinkHidden());
     assertNull(underTest.getTitle());
     assertFalse(underTest.isTitleLinkHidden());
@@ -119,12 +117,12 @@ class TeaserV1ImplTest {
     assertNotNull(underTest.getId());
 
     assertInvalidMedia(underTest);
-    assertInvalidLink(underTest);
+    assertInvalidLink(underTest.getLink());
     assertNull(underTest.getData());
   }
 
   @Test
-  @SuppressWarnings({ "null", "deprecation" })
+  @SuppressWarnings("null")
   void testWithImageAndPrimaryLink() {
     enableDataLayer(context, true);
 
@@ -141,7 +139,6 @@ class TeaserV1ImplTest {
 
     assertFalse(underTest.isActionsEnabled());
     assertTrue(underTest.getActions().isEmpty());
-    assertEquals("http://host", underTest.getLinkURL());
     assertFalse(underTest.isImageLinkHidden());
     assertEquals("Teaser Title", underTest.getTitle());
     assertFalse(underTest.isTitleLinkHidden());
@@ -150,7 +147,7 @@ class TeaserV1ImplTest {
     assertEquals(RESOURCE_TYPE, underTest.getExportedType());
 
     assertValidMedia(underTest, "/content/dam/sample/sample.jpg/_jcr_content/renditions/original./sample.jpg");
-    assertValidLink(underTest, "http://host", "_blank");
+    assertValidLink(underTest.getLink(), "http://host", "_blank");
 
     ComponentData data = underTest.getData();
     assertNotNull(data);
@@ -252,7 +249,6 @@ class TeaserV1ImplTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void testWithActions() {
     Resource resource = context.create().resource(page, "teaser",
         PROPERTY_RESOURCE_TYPE, RESOURCE_TYPE,
@@ -273,22 +269,20 @@ class TeaserV1ImplTest {
     Teaser underTest = AdaptTo.notNull(context.request(), Teaser.class);
 
     assertTrue(underTest.isActionsEnabled());
-    assertNull(underTest.getLinkURL());
-    assertInvalidLink(underTest);
+    assertInvalidLink(underTest.getLink());
 
     assertEquals(2, underTest.getActions().size());
 
     ListItem action1 = underTest.getActions().get(0);
     assertEquals("Action 1", action1.getTitle());
-    assertValidLink(action1, "http://host/action1");
+    assertValidLink(action1.getLink(), "http://host/action1");
 
     ListItem action3 = underTest.getActions().get(1);
     assertEquals("Action 3", action3.getTitle());
-    assertValidLink(action3, "http://host/action3");
+    assertValidLink(action3.getLink(), "http://host/action3");
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void testWithActions_DisabledViaPolicy() {
     context.contentPolicyMapping(RESOURCE_TYPE,
         PN_ACTIONS_DISABLED, true);
@@ -306,8 +300,7 @@ class TeaserV1ImplTest {
     Teaser underTest = AdaptTo.notNull(context.request(), Teaser.class);
 
     assertFalse(underTest.isActionsEnabled());
-    assertEquals("http://host", underTest.getLinkURL());
-    assertValidLink(underTest, "http://host");
+    assertValidLink(underTest.getLink(), "http://host");
 
     assertTrue(underTest.getActions().isEmpty());
   }

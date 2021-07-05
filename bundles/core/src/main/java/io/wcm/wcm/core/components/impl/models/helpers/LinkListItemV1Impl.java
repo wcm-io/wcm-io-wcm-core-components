@@ -24,68 +24,49 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.adobe.cq.wcm.core.components.models.ListItem;
-import com.adobe.cq.wcm.core.components.models.datalayer.PageData;
-import com.adobe.cq.wcm.core.components.models.datalayer.builder.DataLayerBuilder;
 import com.day.cq.wcm.api.components.Component;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.wcm.handler.link.Link;
-import io.wcm.handler.link.SyntheticLinkResource;
+import io.wcm.wcm.core.components.impl.link.LinkWrapper;
 import io.wcm.wcm.core.components.models.mixin.LinkMixin;
 
 /**
  * {@link ListItem} implementation for any links.
  */
-public class LinkListItemV1Impl extends AbstractListItemImpl implements ListItem, LinkMixin {
-
-  private final String title;
-  private final Link link;
+public class LinkListItemV1Impl extends LinkListItemV2Impl implements LinkMixin {
 
   /**
    * @param title Title
    * @param link Link
+   * @param itemIdPrefix Item ID prefix
    * @param parentId Parent Id
    * @param parentComponent The component that contains this list item
    * @param contextResource Resource in context of which this link item is used
    */
-  public LinkListItemV1Impl(@NotNull String title, @NotNull Link link, @Nullable String parentId,
-      @Nullable Component parentComponent, @NotNull Resource contextResource) {
-    super(getLinkRequestResource(link, contextResource), parentId, parentComponent);
-    this.title = title;
-    this.link = link;
-  }
-
-  private static @NotNull Resource getLinkRequestResource(@NotNull Link link, @NotNull Resource contextResource) {
-    Resource resource = link.getLinkRequest().getResource();
-    if (resource == null) {
-      resource = new SyntheticLinkResource(contextResource.getResourceResolver(), contextResource.getPath());
-    }
-    return resource;
+  public LinkListItemV1Impl(@NotNull String title, @NotNull LinkWrapper link, @NotNull String itemIdPrefix,
+      @Nullable String parentId, @Nullable Component parentComponent, @NotNull Resource contextResource) {
+    super(title, link, itemIdPrefix, parentId, parentComponent, contextResource);
   }
 
   @Override
-  @NotNull
-  public Link getLinkObject() {
-    return link;
+  public @NotNull Link getLinkObject() {
+    return link.getLinkObject();
   }
 
+  // overwrite to add @JsonIgnore
   @Override
+  @JsonIgnore
+  public com.adobe.cq.wcm.core.components.commons.link.Link getLink() {
+    return super.getLink();
+  }
+
+  // overwrite to add @JsonIgnore(false)
+  @Override
+  @Deprecated
+  @JsonIgnore(false)
   public String getURL() {
-    return link.getUrl();
-  }
-
-  @Override
-  public String getTitle() {
-    return title;
-  }
-
-  // --- data layer ---
-
-  @Override
-  protected @NotNull PageData getComponentData() {
-    return DataLayerBuilder.extending(super.getComponentData()).asPage()
-        .withTitle(this::getTitle)
-        .withLinkUrl(this::getURL)
-        .build();
+    return super.getURL();
   }
 
 }

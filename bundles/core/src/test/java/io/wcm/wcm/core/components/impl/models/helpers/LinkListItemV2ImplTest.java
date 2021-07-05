@@ -23,7 +23,6 @@ import static io.wcm.samples.core.testcontext.AppAemContext.CONTENT_ROOT;
 import static io.wcm.samples.core.testcontext.TestUtils.assertInvalidLink;
 import static io.wcm.samples.core.testcontext.TestUtils.assertValidLink;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import io.wcm.wcm.core.components.impl.link.LinkWrapper;
 
 @ExtendWith(AemContextExtension.class)
-class LinkListItemV1ImplTest {
+class LinkListItemV2ImplTest {
 
   private final AemContext context = AppAemContext.newAemContext();
 
@@ -52,28 +51,23 @@ class LinkListItemV1ImplTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void testValidLink() {
     Page page = context.create().page(CONTENT_ROOT + "/page1");
     LinkWrapper link = new LinkWrapper(linkHandler.get(page).build());
-    ListItem underTest = new LinkListItemV1Impl("My Title", link, "id-prefix", "p-id", null, page.getContentResource());
+    ListItem underTest = new LinkListItemV2Impl("My Title", link, "id-prefix", "p-id", null, page.getContentResource());
 
     assertEquals("My Title", underTest.getTitle());
-    assertEquals(page.getPath() + ".html", underTest.getURL());
 
-    assertValidLink(underTest, page.getPath() + ".html");
+    assertValidLink(underTest.getLink(), page.getPath() + ".html");
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   void testInvalidLink() {
     Page page = context.create().page(CONTENT_ROOT + "/page1");
     LinkWrapper link = new LinkWrapper(linkHandler.invalid());
-    ListItem underTest = new LinkListItemV1Impl("My Title", link, "id-prefix", "p-id", null, page.getContentResource());
+    ListItem underTest = new LinkListItemV2Impl("My Title", link, "id-prefix", "p-id", null, page.getContentResource());
 
-    assertNull(underTest.getURL());
-
-    assertInvalidLink(underTest);
+    assertInvalidLink(underTest.getLink());
   }
 
 }
