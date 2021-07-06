@@ -54,11 +54,12 @@ public class ImageAreaV1Impl extends ImageAreaV2Impl {
    * @param imageMap Image map
    * @return Converted image map
    */
+  @SuppressWarnings("unchecked")
   public static @Nullable List<ImageArea> convertMap(@Nullable List<ImageMapArea> imageMap) {
     if (imageMap == null) {
       return null;
     }
-    return imageMap.stream()
+    return (List)imageMap.stream()
         .map(ImageAreaV1Impl::new)
         .collect(Collectors.toList());
   }

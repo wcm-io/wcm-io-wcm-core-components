@@ -115,11 +115,12 @@ public class ImageAreaV2Impl implements ImageArea {
    * @param imageMap Image map
    * @return Converted image map
    */
+  @SuppressWarnings("unchecked")
   public static @Nullable List<ImageArea> convertMap(@Nullable List<ImageMapArea> imageMap) {
     if (imageMap == null) {
       return null;
     }
-    return imageMap.stream()
+    return (List)imageMap.stream()
         .map(ImageAreaV2Impl::new)
         .collect(Collectors.toList());
   }
