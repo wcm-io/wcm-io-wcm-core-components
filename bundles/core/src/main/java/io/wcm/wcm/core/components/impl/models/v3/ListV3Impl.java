@@ -110,6 +110,11 @@ public class ListV3Impl extends AbstractComponentImpl implements List {
     return this.delegate.getDateFormatString();
   }
 
+  @Override
+  public boolean displayItemAsTeaser() {
+    return this.delegate.displayItemAsTeaser();
+  }
+
   protected ListItem newPageListItem(@NotNull Page page, @NotNull Link link) {
     return new PageListItemV2Impl(page, link,
         getId(), this.componentContext.getComponent());
