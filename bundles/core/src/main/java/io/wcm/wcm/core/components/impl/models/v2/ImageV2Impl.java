@@ -59,7 +59,6 @@ import io.wcm.handler.media.Media;
 import io.wcm.handler.media.MediaHandler;
 import io.wcm.handler.media.Rendition;
 import io.wcm.handler.url.UrlHandler;
-import io.wcm.sling.commons.adapter.AdaptTo;
 import io.wcm.sling.models.annotations.AemObject;
 import io.wcm.wcm.core.components.impl.models.helpers.AbstractComponentImpl;
 import io.wcm.wcm.core.components.impl.models.helpers.ImageAreaV1Impl;
@@ -354,7 +353,7 @@ public class ImageV2Impl extends AbstractComponentImpl implements Image, MediaMi
         .withAssetData(() -> Optional.of(media)
             .filter(Media::isValid)
             .map(Media::getAsset)
-            .map(asset -> AdaptTo.notNull(asset, com.day.cq.dam.api.Asset.class))
+            .map(asset -> asset.adaptTo(com.day.cq.dam.api.Asset.class))
             .map(DataLayerBuilder::forAsset)
             .map(AssetDataBuilder::build)
             .orElse(null))
